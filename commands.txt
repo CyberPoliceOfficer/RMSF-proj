@@ -1,0 +1,1 @@
+scp -r /mnt/c/Users/joaov/github/RMSF-proj pi@192.168.1.82:/home/pi
