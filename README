@@ -1,0 +1,4 @@
+Used the Seeed-Studio/grove.py and seeed-python-mlx90640 libraries.
+Install with
+curl -sL https://github.com/Seeed-Studio/grove.py/raw/master/install.sh | sudo bash -s -
+pip3 install seeed-python-mlx90640
