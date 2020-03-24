@@ -8,20 +8,20 @@ def main():
 
     start_time = time.time()
 
+    main_params = config(filename='config.ini')
     params_database = config(filename='config.ini', section='postgresql')
     measurements_base = psydatabase(params_database)
     measurements_base.connect()
-    CameraOne = mlx90640_sampler(32,24,28)
-
+    main_params = measurements_base.fetch_params(main_params)
+    CameraOne = mlx90640_sampler(32, 24, float(main_params["tempt"]))
 
     while True:
         start = time.time()
-        try:
-            user_temp = CameraOne.termal_sample()
-            measurements_base.push_measurements (datetime.now(), 'xy123cx', user_temp, CameraOne.frame, 0)
-            print(user_temp)
-        except ValueError:
-            continue
+
+        user_temp = CameraOne.termal_sample()
+        measurements_base.push_measurements (datetime.now(), main_params["serial"], user_temp, CameraOne.frame, 0)
+        print(user_temp)
+
         time.sleep(10)
         end = time.time()
         print("The time: %f"%(end - start))
