@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TemperatureMonitor</string>
+    <string name="result_ad">Logged in as administrator</string>
+    <string name="result_nor">Logged in as normal user</string>
+    <string name="result_fail">Wrong credentials or serial</string>
+    <string name="wrong">Something went wrong!</string>
+</resources>

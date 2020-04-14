@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+
+   <TextView
+       android:id="@+id/listText"
+       android:layout_width="match_parent"
+       android:layout_height="50dp"
+       android:text="Serial : Bucelas"
+       android:gravity="center_vertical|start">
+       ></TextView>
+
+    <Button
+        android:id="@+id/listButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/listText"
+        android:layout_alignEnd="@+id/listText"
+        android:layout_alignRight="@+id/listText"
+        android:layout_alignBottom="@+id/listText"
+        android:gravity="center"
+        android:text="+"
+        android:textSize="24sp">
+
+    </Button>
+
+
+</RelativeLayout>
