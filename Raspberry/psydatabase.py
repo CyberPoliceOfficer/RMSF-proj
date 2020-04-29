@@ -22,10 +22,10 @@ class psydatabase:
             self._cur.close()
             self._conn.close()
 
-    def push_measurements (self, Time_Point, Serial_Number, Temperature, Termal_Image, Fan_RPM):
+    def push_measurements (self, Time_Point, Serial_Number, Temperature, Termal_Image, Clusters, Fan_RPM):
         try:
             if (self.conn_status):
-                self._cur.execute('INSERT INTO Measurements VALUES (%s, %s, %s, %s, %s)', (Serial_Number, Time_Point, Termal_Image, Temperature, Fan_RPM))
+                self._cur.execute('INSERT INTO Measurements VALUES (%s, %s, %s, %s, %s, %s)', (Serial_Number, Time_Point, Termal_Image, Clusters, Temperature, Fan_RPM))
                 self._conn.commit()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)

@@ -18,11 +18,10 @@ def main():
     while True:
         start = time.time()
 
-        user_temp = CameraOne.termal_sample()
-        measurements_base.push_measurements (datetime.now(), main_params["serial"], user_temp, CameraOne.frame, 0)
+        [user_temp, clusters] = CameraOne.termal_sample()
+        measurements_base.push_measurements (datetime.now(), main_params["serial"], user_temp, CameraOne.frame, clusters, 0)
         print(user_temp)
 
-        time.sleep(10)
         end = time.time()
         print("The time: %f"%(end - start))
 
