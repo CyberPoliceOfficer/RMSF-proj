@@ -1,0 +1,10 @@
+import serial
+
+class arduino_COM:
+    def __init__ (self, port):
+        self._serial = serial.Serial(port)
+
+    def push_data (self):
+
+    def disconnect (self):
+        self._serial.close()
