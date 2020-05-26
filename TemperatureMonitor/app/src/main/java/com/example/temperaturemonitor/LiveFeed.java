@@ -192,6 +192,13 @@ public class LiveFeed extends AppCompatActivity {
 
                                     String[] parts = fancyServerResponse.split(",");
 
+                                    Bitmap operation = Bitmap.createBitmap(24,32, Bitmap.Config.ARGB_8888);
+
+                                    for(int w = 0; w < 24; w++){
+                                        for(int j = 0; j < 32; j++){
+                                            operation.setPixel(w, j, Color.argb(255, 0, 0, 255));
+                                        }
+                                    }
 
                                     for(int i = 0; i < 9; i = i + 3) {
                                         float x = Float.parseFloat(parts[i]);
@@ -202,11 +209,6 @@ public class LiveFeed extends AppCompatActivity {
                                             continue;
                                         }
 
-                                        Log.d("fun", String.valueOf(x));
-                                        Log.d("fun", String.valueOf(y));
-                                        Log.d("fun", String.valueOf(r));
-
-                                        Bitmap operation = Bitmap.createBitmap(24,32, Bitmap.Config.ARGB_8888);
 
                                         for(int w = 0; w < 24; w++){
                                             for(int j = 0; j < 32; j++){
@@ -214,17 +216,13 @@ public class LiveFeed extends AppCompatActivity {
                                                 if( (x - w)*(x - w) + (y - j)*(y - j) < r*r) {
                                                     operation.setPixel(w, j, Color.argb(255, 255, 0, 0));
                                                 }
-                                                else {
-                                                    operation.setPixel(w, j, Color.argb(255, 0, 0, 255));
-                                                }
 
                                             }
                                         }
 
-                                        feed1.setImageBitmap(operation);
-
                                     }
 
+                                    feed1.setImageBitmap(operation);
 
 
                                 }

@@ -13,7 +13,7 @@
         android:layout_marginTop="25dp"
         android:ems="10"
         android:gravity="center|center_horizontal"
-        android:hint="name"
+        android:hint="email"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,6 @@
         android:layout_marginTop="25dp"
         android:text="Log In"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passText" />
 

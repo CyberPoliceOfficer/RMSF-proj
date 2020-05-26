@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -44,6 +45,8 @@ public class Controls extends AppCompatActivity {
         boolean isAdmin = false;
 
         String serial_aux = "xxx";
+
+        final int[] id = {0};
 
         final int minFanTemp = 30;
         final int maxFanTemp = 100;
@@ -392,29 +395,6 @@ public class Controls extends AppCompatActivity {
         });
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Channel";
-            String description = "This is a channel";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("1", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("Fire Bitch!!!")
-                .setContentText("Nigga dat transformer is on fire!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-
-
-
         final Handler handler = new Handler();
 
         Runnable runnableCode = new Runnable() {
@@ -437,11 +417,6 @@ public class Controls extends AppCompatActivity {
                                     temperatureView.setText(parts[1]);
                                     fanRPMView.setText(parts[2]);
 
-
-                                    if(Float.valueOf(parts[1]) > maxRelayTemp) {
-                                        // notificationId is a unique int for each notification that you must define
-                                        notificationManager.notify(0, builder.build());
-                                    }
                                 }
                             },
                             new Response.ErrorListener() {

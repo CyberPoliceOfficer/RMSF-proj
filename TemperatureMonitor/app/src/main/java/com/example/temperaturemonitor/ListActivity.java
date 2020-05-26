@@ -1,13 +1,19 @@
 package com.example.temperaturemonitor;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.Property;
 import android.view.LayoutInflater;
@@ -31,7 +37,9 @@ import org.jsoup.Jsoup;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -102,9 +110,79 @@ public class ListActivity extends AppCompatActivity {
         }
 
 
-        //listInfo.add(new ListData("xy123cx", "Bucelas"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Channel";
+            String description = "This is a channel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("1", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Transformer Alarm")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
 
+
+        final Handler handler = new Handler();
+
+        Runnable runnableCode = new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+
+                    String url = "http://web.tecnico.ulisboa.pt/ist187028/Get_Alarms.php";
+
+                    StringRequest postRequest = new StringRequest(Request.Method.GET, url,
+                            new Response.Listener<String>()
+                            {
+                                @Override
+                                public void onResponse(String response) {
+                                    // response
+                                    String serverResponse = Jsoup.parse(response).text();
+
+                                    String[] lines = serverResponse.split("\n");
+
+                                    for(String line: lines) {
+                                        String[] parts = line.split(" ");
+
+                                        // notificationId is a unique int for each notification that you must define
+                                        String content = "Time: " + parts[1] + " " + parts[2].substring(0,8) + " Serial_number: " + parts[0];
+                                        notificationManager.notify(parts[1].hashCode() + parts[0].hashCode(), builder.setContentText(content).build());
+
+                                    }
+
+
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                }
+                            }
+                    );
+
+                    queue.add(postRequest);
+                }
+                catch (Exception e){
+
+                }
+
+                handler.postDelayed(this, 500);
+
+            }
+        };
+
+        handler.post(runnableCode);
 
 
     }
