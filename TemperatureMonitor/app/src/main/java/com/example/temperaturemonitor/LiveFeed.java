@@ -51,7 +51,7 @@ public class LiveFeed extends AppCompatActivity {
 
         final String serial = serial_aux;
 
-
+        /*
 
         final Handler handler = new Handler();
 
@@ -161,8 +161,106 @@ public class LiveFeed extends AppCompatActivity {
             }
         };
 
-        handler.post(runnableCode);
+        handler.post(runnableCode);*/
 
+
+
+
+
+
+        final Handler handler = new Handler();
+
+        minMax.setVisibility(View.INVISIBLE);
+
+        Runnable runnableCode = new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+
+                    String url = "http://web.tecnico.ulisboa.pt/ist187028/Get_Hotspots.php";
+
+                    StringRequest getRequest = new StringRequest(Request.Method.POST, url,
+                            new Response.Listener<String>()
+                            {
+                                @Override
+                                public void onResponse(String response) {
+                                    // response
+                                    String serverResponse = Jsoup.parse(response).text();
+
+                                    String fancyServerResponse = serverResponse.substring(1, serverResponse.length() - 2);
+
+                                    String[] parts = fancyServerResponse.split(",");
+
+
+                                    for(int i = 0; i < 9; i = i + 3) {
+                                        float x = Float.parseFloat(parts[i]);
+                                        float y = Float.parseFloat(parts[i+1]);
+                                        float r = Float.parseFloat(parts[i+2]);
+
+                                        if(x < 0 || y < 0 || r < 0) {
+                                            continue;
+                                        }
+
+                                        Log.d("fun", String.valueOf(x));
+                                        Log.d("fun", String.valueOf(y));
+                                        Log.d("fun", String.valueOf(r));
+
+                                        Bitmap operation = Bitmap.createBitmap(24,32, Bitmap.Config.ARGB_8888);
+
+                                        for(int w = 0; w < 24; w++){
+                                            for(int j = 0; j < 32; j++){
+
+                                                if( (x - w)*(x - w) + (y - j)*(y - j) < r*r) {
+                                                    operation.setPixel(w, j, Color.argb(255, 255, 0, 0));
+                                                }
+                                                else {
+                                                    operation.setPixel(w, j, Color.argb(255, 0, 0, 255));
+                                                }
+
+                                            }
+                                        }
+
+                                        feed1.setImageBitmap(operation);
+
+                                    }
+
+
+
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    // error
+
+                                }
+                            }
+                    ) {
+                        @Override
+                        protected Map<String, String> getParams()
+                        {
+                            Map <String, String>  params = new HashMap<String, String>();
+
+                            params.put("serial", serial);
+
+                            return params;
+                        }
+                    };
+
+                    queue.add(getRequest);
+
+
+                }
+                catch (Exception e){
+                    //feed1.setImageBitmap();
+                }
+
+                handler.postDelayed(this, 2000);
+            }
+        };
+
+        handler.post(runnableCode);
 
     }
 }
