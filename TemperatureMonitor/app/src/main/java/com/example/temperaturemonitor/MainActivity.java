@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView result = findViewById(R.id.resultText);
         result.setVisibility(View.INVISIBLE);
 
+        //Obter mail e password inserida, validar apartir da base e permitir acesso se adequado
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(String response) {
                                     // response
-                                    //result.setText("Response is: "+ response.substring(0,500));
+
                                     String serverResponse = Jsoup.parse(response).text();
 
                                     if (serverResponse.equals("1")) {

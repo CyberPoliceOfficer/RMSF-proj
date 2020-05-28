@@ -67,17 +67,20 @@ public class Controls extends AppCompatActivity {
 
         final RequestQueue queue = Volley.newRequestQueue(this);
 
+        //Obter infomacao se é administrador e o numero de serie
         if(getIntent().hasExtra("isAdmin") && getIntent().hasExtra("serial")) {
             isAdmin = getIntent().getExtras().getBoolean("isAdmin");
             serial_aux = getIntent().getExtras().getString("serial");
         }
         else {
-            //crash:(
+            //crash
         }
 
         final String serial = serial_aux;
 
 
+
+        //Obter o estado atual dos controlos
         try {
 
             String url = "http://web.tecnico.ulisboa.pt/ist187028/Get_Thresholds_&_Activations.php";
@@ -139,101 +142,15 @@ public class Controls extends AppCompatActivity {
         }
 
 
-
-        /*try {
-
-            String url = "http://web.tecnico.ulisboa.pt/ist187028/Get_Thresholds_&_Activations.php";
-
-
-
-
-            StringRequest getResquest = new StringRequest(Request.Method.GET, url,
-                    new Response.Listener<String>()
-                    {
-                        @Override
-                        public void onResponse(String response) {
-                            // response
-                            String serverResponse = Jsoup.parse(response).text();
-
-                            String[] parts = serverResponse.split(" ");
-                            tempForFanValue.setText(parts[1]);
-                            tempForFanBar.setProgress((Integer.valueOf(parts[1]) - minFanTemp)*100/(maxFanTemp - minFanTemp));
-                            tempForRelayValue.setText(parts[3]);
-                            tempForRelayBar.setProgress((Integer.valueOf(parts[3]) - minRelayTemp)*100/(maxRelayTemp - minRelayTemp));
-
-
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // error
-                            relaySwitch.setText(error.getMessage());
-
-                        }
-                    }
-                    );
-
-            queue.add(getResquest);
-
-
-        }
-        catch (Exception e){
-            tempForFanValue.setText(R.string.wrong);
-            tempForRelayValue.setText(R.string.wrong);
-        }
-
-        try {
-
-            String url = "http://web.tecnico.ulisboa.pt/ist187028/Get_Activations.php";
-
-            StringRequest getResquest = new StringRequest(Request.Method.GET, url,
-                    new Response.Listener<String>()
-                    {
-                        @Override
-                        public void onResponse(String response) {
-                            // response
-                            String serverResponse = Jsoup.parse(response).text();
-
-                            String[] parts = serverResponse.split(" ");
-                            int aux = Integer.valueOf(parts[1]);
-                            if(aux > 0) {
-                                relaySwitch.setChecked(true);
-                            }
-                            else {
-                                relaySwitch.setChecked(false);
-                            }
-
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // error
-                            relaySwitch.setText(error.getMessage());
-
-                        }
-                    }
-            );
-
-            queue.add(getResquest);
-
-
-        }
-        catch (Exception e){
-            relaySwitch.setText(R.string.wrong);
-        }*/
-
-
+        //Impedir certos controlos de nao é administrador
         if(!isAdmin) {
             tempForFanBar.setEnabled(false);
             tempForRelayBar.setEnabled(false);
             relaySwitch.setEnabled(false);
-            //feedButton.setEnabled(false);
-            //histButton.setEnabled(false);
         }
 
 
+        //Caso hajam alteracoes na barra, enviar atualizacao à base
         tempForFanBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -288,6 +205,7 @@ public class Controls extends AppCompatActivity {
             }
         });
 
+        //Caso hajam alteracoes na barra, enviar atualizacao à base
         tempForRelayBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -342,6 +260,7 @@ public class Controls extends AppCompatActivity {
             }
         });
 
+        //Caso hajam alteracoes na switch, enviar atualizacao à base
         relaySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -394,6 +313,8 @@ public class Controls extends AppCompatActivity {
             }
         });
 
+
+        //A cada meio segundo, obter medições atuais da base de dados
 
         final Handler handler = new Handler();
 
@@ -451,6 +372,9 @@ public class Controls extends AppCompatActivity {
         };
 
        handler.post(runnableCode);
+
+
+       //Configurar botoes para passar para as proximas atividades
 
        feedButton.setOnClickListener(new View.OnClickListener() {
            @Override

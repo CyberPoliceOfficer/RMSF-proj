@@ -46,6 +46,7 @@ public class StatsActivity extends AppCompatActivity {
 
         String serial_aux = "xxx";
 
+        //Obter numero de serie
         if (getIntent().hasExtra("serial")) {
             serial_aux = getIntent().getExtras().getString("serial");
         } else {
@@ -54,6 +55,7 @@ public class StatsActivity extends AppCompatActivity {
 
         final String serial = serial_aux;
 
+        //Inicializar grafico de barras
         final BarChart barChart = findViewById(R.id.barchart);
 
         barChart.setDrawBarShadow(false);
@@ -67,6 +69,7 @@ public class StatsActivity extends AppCompatActivity {
 
         final ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
 
+        //Entradas dummy
         for (int i = 1; i <= 31; i++) {
             entries.add(new BarEntry(i, 0.01f));
         }
@@ -83,6 +86,8 @@ public class StatsActivity extends AppCompatActivity {
         xAxis.setLabelCount(31);
         xAxis.setTextSize(7f);
 
+
+        //Obter dados do ultimo mes, e reescrever as entradas adequadas
 
         try {
 
@@ -156,7 +161,7 @@ public class StatsActivity extends AppCompatActivity {
 
 
         } catch (Exception e) {
-            //feed1.setImageBitmap();
+
         }
 
 

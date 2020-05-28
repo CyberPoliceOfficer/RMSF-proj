@@ -56,6 +56,7 @@ public class ListActivity extends AppCompatActivity {
 
         boolean is_admin_aux = false;
 
+        //Obter informaçao de administrador
         if (getIntent().hasExtra("isAdmin")) {
             is_admin_aux = getIntent().getExtras().getBoolean("isAdmin");
         } else {
@@ -69,6 +70,7 @@ public class ListActivity extends AppCompatActivity {
 
         final SpecialAdapter adapter = new SpecialAdapter(this, 0, listInfo, is_admin);
 
+        //Obter a lista de nos da bases e construir uma lista com a informacao
         try {
 
             String url = "http://web.tecnico.ulisboa.pt/ist187028/Get_Nodes.php";
@@ -109,6 +111,7 @@ public class ListActivity extends AppCompatActivity {
 
         }
 
+        //Criar notificaçoes para alarmes
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Channel";
@@ -131,6 +134,7 @@ public class ListActivity extends AppCompatActivity {
 
 
 
+        // A cada meio segundo, verificar se há alarmes ativos
         final Handler handler = new Handler();
 
         Runnable runnableCode = new Runnable() {
