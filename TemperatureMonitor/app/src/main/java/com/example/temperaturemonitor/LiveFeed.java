@@ -92,7 +92,7 @@ public class LiveFeed extends AppCompatActivity {
                                         float y = Float.parseFloat(parts[i+1]);
                                         float r = Float.parseFloat(parts[i+2]);
 
-                                        if(x < 0 || y < 0 || r < 0) {
+                                        if(r < 1) {
                                             continue;
                                         }
 
