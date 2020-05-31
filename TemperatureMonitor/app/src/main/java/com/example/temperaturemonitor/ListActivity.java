@@ -1,5 +1,6 @@
 package com.example.temperaturemonitor;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -30,13 +31,17 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +49,7 @@ import java.util.Map;
 public class ListActivity extends AppCompatActivity {
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +75,14 @@ public class ListActivity extends AppCompatActivity {
 
 
         final SpecialAdapter adapter = new SpecialAdapter(this, 0, listInfo, is_admin);
+
+
+        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        };
 
         //Obter a lista de nos da bases e construir uma lista com a informacao
         try {
@@ -153,6 +167,8 @@ public class ListActivity extends AppCompatActivity {
                                     // response
                                     String serverResponse = Jsoup.parse(response).text();
 
+                                    if(serverResponse.equals("")) return;
+
                                     String[] lines = serverResponse.split("\n");
 
                                     for(String line: lines) {
@@ -234,7 +250,7 @@ public class ListActivity extends AppCompatActivity {
             TextView textView = view.findViewById(R.id.listText);
             Button button = view.findViewById(R.id.listButton);
 
-            String fullText = " Serial: " + data.getSerial() + "       Localization: " + data.getLocation();
+            String fullText = " Serial: " + data.getSerial() + " " + data.getLocation();
 
             textView.setText(fullText);
             //textView.setTextSize(10);

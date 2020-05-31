@@ -1,5 +1,6 @@
 package com.example.temperaturemonitor;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -16,24 +17,31 @@ import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.textclassifier.TextLinks;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Base64;
+
 
 public class Controls extends AppCompatActivity {
 
@@ -162,9 +170,41 @@ public class Controls extends AppCompatActivity {
 
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 final int setTemp = (int) Math.round(minFanTemp + (maxFanTemp-minFanTemp)*seekBar.getProgress()*0.01);
+
+                Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                    }
+                };
+
+                JSONObject jsonObject = new JSONObject();
+
+                byte[] bytes = {'f', Byte.parseByte(String.valueOf(setTemp))};
+
+                String encoded = Base64.getEncoder().encodeToString(bytes);
+
+                try {
+                    jsonObject.put("dev_id","arduino1");
+                    jsonObject.put("payload_raw", encoded);
+                    jsonObject.put("confirmed", true);
+                    jsonObject.put("schedule", "last");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                String jsonURL = "https://integrations.thethingsnetwork.org/ttn-eu/api/v2/down/rmsf-project/12_xy?key=ttn-account-v2.sE4IzbkqRlnNKIiWOdXE3TumLg-7oU2NxysI7od2KzI";
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,jsonURL, jsonObject, listener, null);
+
+                queue.add(jsonObjectRequest);
+
+
+
                 try {
 
                     String url = "http://web.tecnico.ulisboa.pt/ist187028/Set_Thresholds_1.php";
@@ -217,9 +257,39 @@ public class Controls extends AppCompatActivity {
 
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 final int setTemp = (int) Math.round(minRelayTemp + (maxRelayTemp-minRelayTemp)*seekBar.getProgress()*0.01);
+
+                Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                    }
+                };
+
+                JSONObject jsonObject = new JSONObject();
+
+                byte[] bytes = {'r', Byte.parseByte(String.valueOf(setTemp))};
+
+                String encoded = Base64.getEncoder().encodeToString(bytes);
+
+                try {
+                    jsonObject.put("dev_id","arduino1");
+                    jsonObject.put("payload_raw", encoded);
+                    jsonObject.put("confirmed", true);
+                    jsonObject.put("schedule", "last");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                String jsonURL = "https://integrations.thethingsnetwork.org/ttn-eu/api/v2/down/rmsf-project/12_xy?key=ttn-account-v2.sE4IzbkqRlnNKIiWOdXE3TumLg-7oU2NxysI7od2KzI";
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,jsonURL, jsonObject, listener, null);
+
+                queue.add(jsonObjectRequest);
+
                 try {
 
                     String url = "http://web.tecnico.ulisboa.pt/ist187028/Set_Thresholds_2.php";
@@ -261,11 +331,49 @@ public class Controls extends AppCompatActivity {
         });
 
         //Caso hajam alteracoes na switch, enviar atualizacao à base
-        relaySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        relaySwitch.setOnClickListener(new View.OnClickListener() {
 
-                final boolean isCheckedaux = isChecked;
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+
+                final boolean isCheckedaux = ((CompoundButton) v).isChecked();
+
+
+                Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                    }
+                };
+
+                JSONObject jsonObject = new JSONObject();
+
+                byte send = 0;
+
+                if(isCheckedaux) {
+                    send = 1;
+                }
+
+                byte[] bytes = {'p', send};
+
+                String encoded = Base64.getEncoder().encodeToString(bytes);
+
+                try {
+                    jsonObject.put("dev_id","arduino1");
+                    jsonObject.put("payload_raw", encoded);
+                    jsonObject.put("confirmed", true);
+                    jsonObject.put("schedule", "last");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                String jsonURL = "https://integrations.thethingsnetwork.org/ttn-eu/api/v2/down/rmsf-project/12_xy?key=ttn-account-v2.sE4IzbkqRlnNKIiWOdXE3TumLg-7oU2NxysI7od2KzI";
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,jsonURL, jsonObject, listener, null);
+
+                queue.add(jsonObjectRequest);
+
 
                 try {
 
