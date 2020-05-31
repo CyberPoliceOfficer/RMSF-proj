@@ -3,6 +3,7 @@ import numpy as np
 from scipy.ndimage import gaussian_filter
 from scipy import ndimage
 
+# Classe do amostrador
 class mlx90640_sampler:
     def  __init__ (self, input_sizeX = 32, input_sizeY = 24, input_TempT = 80, input_top_clusters = 3):
             self._mlx = seeed_mlx90640.grove_mxl90640()
@@ -13,13 +14,15 @@ class mlx90640_sampler:
             self.frame = [0] * self.sizeX * self.sizeY
             self.n_clusters = input_top_clusters
 
+    # rotina que amostra e processa a imagem termica
     def termal_sample (self):
             self._mlx.getFrame(self.frame)
             framenp = np.array(self.frame)
             frame_avg = np.mean(framenp, axis=0)
             framenp = framenp.reshape(self.sizeY, self.sizeX)
-            labeled, nr_objects = ndimage.label(gaussian_filter(framenp, sigma = 1) > self.TempT)
+            labeled, nr_objects = ndimage.label(gaussian_filter(framenp, sigma = 5) > self.TempT)
 
+            # calculo do user temp
             if (nr_objects > 0):
                 count = np.zeros((nr_objects,))
                 sum = np.zeros((nr_objects,))
@@ -31,6 +34,7 @@ class mlx90640_sampler:
             else:
                 user_temp = frame_avg
 
+            # calculo das clusters
             clusters = np.zeros(0)
             if (nr_objects > 0):
                 ind = np.argsort(count, axis=0)
@@ -39,7 +43,6 @@ class mlx90640_sampler:
                     c_ind = ind
                 else:
                     c_ind = ind[0:self.n_clusters]
-
 
                 c_ind = c_ind+1
 
@@ -52,12 +55,13 @@ class mlx90640_sampler:
 
 
             if (nr_objects < self.n_clusters):
-                clusters = np.append(clusters, np.zeros((self.n_clusters-nr_objects)*3) - 1)
+                clusters = np.append(clusters, np.zeros((self.n_clusters-nr_objects)*3))
 
             return [user_temp, clusters.tolist()];
 
+# Classe do controlador
 class controller:
-    def __init__ (self, inP, inI, Sat_Thres = 1024, Und_Thres = 200):
+    def __init__ (self, inP, inI, Sat_Thres = 1023, Und_Thres = 200):
         self.P = inP
         self.I = inI
         self._TotalI = 0
@@ -66,6 +70,7 @@ class controller:
         self._Sat_Thres = Sat_Thres
         self._Und_Thres = Und_Thres
 
+    # Controlador PI
     def compute_actuation (self, x):
         e = (self.ref - x)
         self._TotalI += self.I*(e + self._last_e)/2

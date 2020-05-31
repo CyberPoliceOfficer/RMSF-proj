@@ -26,6 +26,7 @@ class psydatabase:
                 self._cur.execute('INSERT INTO Measurements VALUES (%s, %s, %s, %s, %s)', (Serial_Number, Time_Point, Clusters, Temperature, Fan_RPM))
                 self._conn.commit()
         except (Exception, psycopg2.DatabaseError) as error:
+            print("psydatabase: Error pushing")
             print(error)
 
     def fetch_params (self, input_params):
@@ -41,7 +42,7 @@ class psydatabase:
                 input_params['kp'] = rows[1]
                 input_params['ki'] = rows[2]
         except (Exception, psycopg2.DatabaseError) as error:
-            print("Error fetching")
+            print("psydatabase: Error fetching")
             print(error)
         return input_params
 
@@ -51,5 +52,5 @@ class psydatabase:
                 self._cur.execute('INSERT INTO Alarms VALUES (%s, %s)', (Serial_Number, Time_Point))
                 self._conn.commit()
         except (Exception, psycopg2.DatabaseError) as error:
-            print("Error sounding alarm")
+            print("psydatabase: Error sounding alarm")
             print(error)
