@@ -1,10 +1,10 @@
 from configparser import ConfigParser
 
-
+# Rotina que carrega configurações
 def config(filename='config.ini', section='main'):
-    # create a parser
+    # Criar o parser
     parser = ConfigParser()
-    # read config file
+    # Criar a config file
     parser.read(filename)
 
     # get section
@@ -17,3 +17,15 @@ def config(filename='config.ini', section='main'):
         raise Exception('Section {0} not found in the {1} file'.format(section, filename))
 
     return db
+
+# Rotina que escreve novos parametros no ficheiro de configurações
+def set_setting(filename, section, parameter, value):
+    # Criar o parser
+    parser = ConfigParser()
+    # Criar a config file
+    parser.read(filename)
+
+    parser.set(section, parameter, value)
+
+    fp = open(filename, 'w')
+    parser.write(fp, space_around_delimiters=True)
